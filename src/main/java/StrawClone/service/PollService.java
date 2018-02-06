@@ -17,27 +17,24 @@ public class PollService {
 
     private final PollRepository pollRepository;
 
-    public PollService(PollRepository taskRepository) {
-        this.pollRepository = taskRepository;
+    public PollService(PollRepository pollRepository) {
+        this.pollRepository = pollRepository;
     }
 
-    public List<Poll> findAll(){
-        List<Poll> polls = new ArrayList<>();
-        for(Poll poll : pollRepository.findAll()){
-            polls.add(poll);
-        }
-        return polls;
-    }
 
     public Poll findPoll(int id){
-        return pollRepository.findOne(id);
+        return  this.pollRepository.findOne(id);
+    }
+
+    public void vote(int id, int ans_id){
+        this.pollRepository.findOne(id).getAnswers().get(ans_id).setNum_times_picked(this.pollRepository.findOne(id).getAnswers().get(ans_id).getNum_times_picked() + 1);
     }
 
     public void savePoll(Poll poll){
-        pollRepository.save(poll);
+        this.pollRepository.save(poll);
     }
 
     public void delete(int id){
-        pollRepository.delete(id);
+        this.pollRepository.delete(id);
     }
 }

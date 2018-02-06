@@ -2,51 +2,65 @@ package StrawClone.controller;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.ws.Response;
 
+import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import StrawClone.model.Poll;
 import StrawClone.service.PollService;
 
-    @Controller
+    @RestController
     public class MainController {
 
         @Autowired
         private PollService pollService;
 
-        @GetMapping("/")
-        public String home(HttpServletRequest request) {
-            return "index";
+        @PostMapping("/")
+        public ResponseEntity<Poll> home()
+        {
+
+            Random rand = new Random();
+            int  n = rand.nextInt(50) + 1;
+            return new ResponseEntity<Poll>(pollService.findPoll(n),HttpStatus.OK);
         }
 
-        @GetMapping("/all-polls")
-        public List<Poll> allPolls(HttpServletRequest request) {
-            return pollService.findAll();
+
+        @PostMapping("/create")
+        public void create(@RequestBody Poll p)
+        {
+            pollService.savePoll(p);
         }
 
-        @GetMapping("/new-polls")
-        public String newPoll(HttpServletRequest request) {
-            return "index";
+
+        @PostMapping("/read")
+        public void read(HttpServletRequest request)
+        {
+
         }
 
-        @PostMapping("/save-polls")
-        public String saveTask(@ModelAttribute Poll poll, BindingResult bindingResult, HttpServletRequest request) {
-            poll.setDateCreated(new Date());
-            pollService.savePoll(poll);
-            return "index";
+
+        @PostMapping("/update")
+        public void update(HttpServletRequest request)
+        {
+
         }
 
-        @GetMapping("/delete-poll")
-        public String deleteTask(@RequestParam int id, HttpServletRequest request) {
-            pollService.delete(id);
-            return "index";
+
+
+        @PostMapping("/delete")
+        public void delete(HttpServletRequest request)
+        {
+
         }
+
     }
